@@ -608,17 +608,25 @@ with t1:
         mtbf_n["BD_N"]   = (1 - (mtbf_n["Breakdown"] - mtbf_n["Breakdown"].min()) / (mtbf_n["Breakdown"].max() - mtbf_n["Breakdown"].min())) * 10
         mtbf_n["R_N"]    = (1 - (mtbf_n["Repair"] - mtbf_n["Repair"].min()) / (mtbf_n["Repair"].max() - mtbf_n["Repair"].min())) * 10
 
+        CMAP_RGBA = {
+            "HC-01": "rgba(0,230,118,0.08)",
+            "HC-02": "rgba(105,240,174,0.08)",
+            "HC-03": "rgba(29,233,182,0.08)",
+            "HC-04": "rgba(64,196,255,0.08)",
+            "HC-05": "rgba(255,202,40,0.08)",
+        }
         fig = go.Figure()
         for _, row in mtbf_n.iterrows():
+            crane_id = row["Crane"]
             vals = [row["BD_N"], row["MTBF_N"], row["MTTR_I"], row["DT_N"], row["R_N"]]
             vals += [vals[0]]
             fig.add_trace(go.Scatterpolar(
                 r=vals,
                 theta=cats_radar + [cats_radar[0]],
-                name=row["Crane"],
-                line=dict(color=CMAP[row["Crane"]], width=2),
+                name=crane_id,
+                line=dict(color=CMAP[crane_id], width=2),
                 fill="toself",
-                fillcolor=CMAP[row["Crane"]].replace("#","rgba(").replace(")","") + ",0.08)",
+                fillcolor=CMAP_RGBA[crane_id],
             ))
         dark_fig(fig, 320)
         fig.update_layout(polar=dict(
